@@ -21,7 +21,7 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:3000',
     'https://ecommerce-omega-liart-73.vercel.app',
-    'https://ecommerce-ts-react.vercel.app/'
+    'https://ecommerce-ts-react.vercel.app'
   ],
   credentials: true
 }));
