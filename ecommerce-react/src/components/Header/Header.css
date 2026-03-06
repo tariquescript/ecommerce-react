@@ -61,13 +61,7 @@
   }
 }
 
-.header .middle-section {
-  flex: 1;
-  max-width: 850px;
-  margin-left: 10px;
-  margin-right: 10px;
-  display: flex;
-}
+
 
 .header .search-bar {
   display: none;
