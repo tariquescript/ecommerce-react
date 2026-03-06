@@ -37,6 +37,11 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/reset', resetRoutes);
 app.use('/api/payment-summary', paymentSummaryRoutes);
 
+// Health check route
+app.get('/', (req, res) => {
+  res.json({ message: 'E-commerce API is running', status: 'OK' });
+});
+
 // Error handling middleware
 /* eslint-disable no-unused-vars */
 app.use((err, req, res, next) => {
