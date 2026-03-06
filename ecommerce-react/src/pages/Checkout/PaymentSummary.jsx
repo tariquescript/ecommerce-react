@@ -7,9 +7,16 @@ export function PaymentSummary({ paymentSummary, loadCart }) {
   const navigate = useNavigate();
 
   const createOrder = async() => {
-    await api.post("/api/orders");
-    await loadCart();
-    navigate("/orders");
+    try {
+      console.log('📝 Creating order...');
+      await api.post("/api/orders");
+      console.log('✅ Order created successfully');
+      await loadCart();
+      navigate("/orders");
+    } catch (error) {
+      console.error('❌ Error creating order:', error.message);
+      alert('Failed to create order: ' + error.message);
+    }
   }
 
   return (

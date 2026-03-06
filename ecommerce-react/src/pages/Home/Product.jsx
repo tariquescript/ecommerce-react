@@ -6,11 +6,18 @@ export function Product({ product, loadCart }) {
   const [quantity, setQuantity] = useState(1);
 
    const addToCart = async () => {
-    await api.post("/api/cart-items", {
-      productId: product.id,
-      quantity: quantity,
-    });
-    await loadCart();
+    try {
+      console.log('🛒 Adding to cart:', product.id);
+      await api.post("/api/cart-items", {
+        productId: product.id,
+        quantity: quantity,
+      });
+      console.log('✅ Added to cart');
+      await loadCart();
+    } catch (error) {
+      console.error('❌ Error adding to cart:', error.message);
+      alert('Failed to add to cart: ' + error.message);
+    }
   };
 
   const selectQuantity = (event) => {

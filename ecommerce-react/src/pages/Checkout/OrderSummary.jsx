@@ -16,8 +16,15 @@ export function OrderSummary({ cartItems, deliveryOption, loadCart }) {
           );
 
           const deleteCartItem = async() => {
-            await api.delete(`/api/cart-items/${items.productId}`);
-            await loadCart();
+            try {
+              console.log('🗑️ Deleting item:', items.productId);
+              await api.delete(`/api/cart-items/${items.productId}`);
+              console.log('✅ Item deleted successfully');
+              await loadCart();
+            } catch (error) {
+              console.error('❌ Error deleting item:', error.message);
+              alert('Failed to delete item: ' + error.message);
+            }
           }
 
           return (

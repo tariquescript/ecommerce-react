@@ -13,10 +13,17 @@ export function DeliveryOption({ deliveryOption, items,loadCart }) {
           priceString = `${formatMoney(deliveryOption.priceCents)} - Shipping`;
         }
         const updateDeliveryOption = async() => {
-          await api.put(`/api/cart-items/${items.productId}`, {
-            deliveryOptionId: deliveryOption.id
-          });
-          await loadCart();
+          try {
+            console.log('📦 Updating delivery option:', deliveryOption.id);
+            await api.put(`/api/cart-items/${items.productId}`, {
+              deliveryOptionId: deliveryOption.id
+            });
+            console.log('✅ Delivery option updated');
+            await loadCart();
+          } catch (error) {
+            console.error('❌ Error updating delivery option:', error.message);
+            alert('Failed to update delivery option: ' + error.message);
+          }
         }
         return (
           <div key={deliveryOption.id} class="delivery-option " onClick={updateDeliveryOption}>
