@@ -62,7 +62,7 @@
   .header .middle-section{
     display: none;
   }
-  .header.search-bar{
+  .header .search-bar{
     display: none;
   }
 }
