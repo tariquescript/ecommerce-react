@@ -24,6 +24,56 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Track if database is initialized
+let dbInitialized = false;
+
+// Initialize database
+async function initDatabase() {
+  if (dbInitialized) return;
+  try {
+    await sequelize.sync();
+
+    const productCount = await Product.count();
+    if (productCount === 0) {
+      const timestamp = Date.now();
+
+      const productsWithTimestamps = defaultProducts.map((product, index) => ({
+        ...product,
+        createdAt: new Date(timestamp + index),
+        updatedAt: new Date(timestamp + index)
+      }));
+
+      const deliveryOptionsWithTimestamps = defaultDeliveryOptions.map((option, index) => ({
+        ...option,
+        createdAt: new Date(timestamp + index),
+        updatedAt: new Date(timestamp + index)
+      }));
+
+      const cartItemsWithTimestamps = defaultCart.map((item, index) => ({
+        ...item,
+        createdAt: new Date(timestamp + index),
+        updatedAt: new Date(timestamp + index)
+      }));
+
+      const ordersWithTimestamps = defaultOrders.map((order, index) => ({
+        ...order,
+        createdAt: new Date(timestamp + index),
+        updatedAt: new Date(timestamp + index)
+      }));
+
+      await Product.bulkCreate(productsWithTimestamps);
+      await DeliveryOption.bulkCreate(deliveryOptionsWithTimestamps);
+      await CartItem.bulkCreate(cartItemsWithTimestamps);
+      await Order.bulkCreate(ordersWithTimestamps);
+
+      console.log('Default data added to the database.');
+    }
+    dbInitialized = true;
+  } catch (error) {
+    console.error('Database initialization error:', error);
+  }
+}
+
 // Middleware
 app.use(cors({
   origin: [
@@ -34,6 +84,12 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+// Initialize database on first request
+app.use(async (req, res, next) => {
+  await initDatabase();
+  next();
+});
 
 // Serve images from the images folder
 app.use('/images', express.static(path.join(__dirname, 'images')));
@@ -67,46 +123,12 @@ app.use((err, req, res, next) => {
 });
 /* eslint-enable no-unused-vars */
 
-// Sync database and load default data if none exist
-await sequelize.sync();
-
-const productCount = await Product.count();
-if (productCount === 0) {
-  const timestamp = Date.now();
-
-  const productsWithTimestamps = defaultProducts.map((product, index) => ({
-    ...product,
-    createdAt: new Date(timestamp + index),
-    updatedAt: new Date(timestamp + index)
-  }));
-
-  const deliveryOptionsWithTimestamps = defaultDeliveryOptions.map((option, index) => ({
-    ...option,
-    createdAt: new Date(timestamp + index),
-    updatedAt: new Date(timestamp + index)
-  }));
-
-  const cartItemsWithTimestamps = defaultCart.map((item, index) => ({
-    ...item,
-    createdAt: new Date(timestamp + index),
-    updatedAt: new Date(timestamp + index)
-  }));
-
-  const ordersWithTimestamps = defaultOrders.map((order, index) => ({
-    ...order,
-    createdAt: new Date(timestamp + index),
-    updatedAt: new Date(timestamp + index)
-  }));
-
-  await Product.bulkCreate(productsWithTimestamps);
-  await DeliveryOption.bulkCreate(deliveryOptionsWithTimestamps);
-  await CartItem.bulkCreate(cartItemsWithTimestamps);
-  await Order.bulkCreate(ordersWithTimestamps);
-
-  console.log('Default data added to the database.');
+// Start server (for local development)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 }
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Export for Vercel serverless
+export default app;
