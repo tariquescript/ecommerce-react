@@ -87,8 +87,13 @@ app.use(express.json());
 
 // Initialize database on first request
 app.use(async (req, res, next) => {
-  await initDatabase();
-  next();
+  try {
+    await initDatabase();
+    next();
+  } catch (error) {
+    console.error('Database init middleware error:', error);
+    res.status(500).json({ error: 'Database initialization failed', details: error.message });
+  }
 });
 
 // Serve images from the images folder
