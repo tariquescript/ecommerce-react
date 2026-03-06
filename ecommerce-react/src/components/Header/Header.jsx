@@ -12,7 +12,7 @@ export function Header({cartItems}) {
     <div class="header">
       <div class="left-section">
         <a href="/" class="header-link">
-          <img class="logo" src="images/myLogo.png" />
+          <img class="logo" src="images/myLogo.png"   />
           <img class="mobile-logo" src="images/mobile-logo-white.png" />
         </a>
       </div>
