@@ -2,77 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { sequelize } from './models/index.js';
 import productRoutes from './routes/products.js';
 import deliveryOptionRoutes from './routes/deliveryOptions.js';
 import cartItemRoutes from './routes/cartItems.js';
 import orderRoutes from './routes/orders.js';
 import resetRoutes from './routes/reset.js';
 import paymentSummaryRoutes from './routes/paymentSummary.js';
-import { Product } from './models/Product.js';
-import { DeliveryOption } from './models/DeliveryOption.js';
-import { CartItem } from './models/CartItem.js';
-import { Order } from './models/Order.js';
-import { defaultProducts } from './defaultData/defaultProducts.js';
-import { defaultDeliveryOptions } from './defaultData/defaultDeliveryOptions.js';
-import { defaultCart } from './defaultData/defaultCart.js';
-import { defaultOrders } from './defaultData/defaultOrders.js';
-import fs from 'fs';
+import { DataStore } from './utils/dataStore.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Track if database is initialized
-let dbInitialized = false;
-
-// Initialize database
-async function initDatabase() {
-  if (dbInitialized) return;
-  try {
-    await sequelize.sync();
-
-    const productCount = await Product.count();
-    if (productCount === 0) {
-      const timestamp = Date.now();
-
-      const productsWithTimestamps = defaultProducts.map((product, index) => ({
-        ...product,
-        createdAt: new Date(timestamp + index),
-        updatedAt: new Date(timestamp + index)
-      }));
-
-      const deliveryOptionsWithTimestamps = defaultDeliveryOptions.map((option, index) => ({
-        ...option,
-        createdAt: new Date(timestamp + index),
-        updatedAt: new Date(timestamp + index)
-      }));
-
-      const cartItemsWithTimestamps = defaultCart.map((item, index) => ({
-        ...item,
-        createdAt: new Date(timestamp + index),
-        updatedAt: new Date(timestamp + index)
-      }));
-
-      const ordersWithTimestamps = defaultOrders.map((order, index) => ({
-        ...order,
-        createdAt: new Date(timestamp + index),
-        updatedAt: new Date(timestamp + index)
-      }));
-
-      await Product.bulkCreate(productsWithTimestamps);
-      await DeliveryOption.bulkCreate(deliveryOptionsWithTimestamps);
-      await CartItem.bulkCreate(cartItemsWithTimestamps);
-      await Order.bulkCreate(ordersWithTimestamps);
-
-      console.log('Default data added to the database.');
-    }
-    dbInitialized = true;
-  } catch (error) {
-    console.error('Database initialization error:', error);
-  }
-}
 
 // Middleware
 app.use(cors({
@@ -84,17 +25,6 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-
-// Initialize database on first request
-app.use(async (req, res, next) => {
-  try {
-    await initDatabase();
-    next();
-  } catch (error) {
-    console.error('Database init middleware error:', error);
-    res.status(500).json({ error: 'Database initialization failed', details: error.message });
-  }
-});
 
 // Serve images from the images folder
 app.use('/images', express.static(path.join(__dirname, 'images')));

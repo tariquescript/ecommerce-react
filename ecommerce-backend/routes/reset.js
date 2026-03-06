@@ -1,51 +1,33 @@
 import express from 'express';
-import { sequelize } from '../models/index.js';
-import { Product } from '../models/Product.js';
-import { DeliveryOption } from '../models/DeliveryOption.js';
-import { CartItem } from '../models/CartItem.js';
-import { Order } from '../models/Order.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { defaultProducts } from '../defaultData/defaultProducts.js';
 import { defaultDeliveryOptions } from '../defaultData/defaultDeliveryOptions.js';
 import { defaultCart } from '../defaultData/defaultCart.js';
 import { defaultOrders } from '../defaultData/defaultOrders.js';
 
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-router.post('/', async (req, res) => {
-  await sequelize.sync({ force: true });
+router.post('/', (req, res) => {
+  const DATA_DIR = path.join(__dirname, '../backend');
+  const FILES = {
+    products: path.join(DATA_DIR, 'products.json'),
+    cart: path.join(DATA_DIR, 'cart.json'),
+    deliveryOptions: path.join(DATA_DIR, 'deliveryOptions.json'),
+    orders: path.join(DATA_DIR, 'orders.json')
+  };
 
-  const timestamp = Date.now();
-
-  const productsWithTimestamps = defaultProducts.map((product, index) => ({
-    ...product,
-    createdAt: new Date(timestamp + index),
-    updatedAt: new Date(timestamp + index)
-  }));
-
-  const deliveryOptionsWithTimestamps = defaultDeliveryOptions.map((option, index) => ({
-    ...option,
-    createdAt: new Date(timestamp + index),
-    updatedAt: new Date(timestamp + index)
-  }));
-
-  const cartItemsWithTimestamps = defaultCart.map((item, index) => ({
-    ...item,
-    createdAt: new Date(timestamp + index),
-    updatedAt: new Date(timestamp + index)
-  }));
-
-  const ordersWithTimestamps = defaultOrders.map((order, index) => ({
-    ...order,
-    createdAt: new Date(timestamp + index),
-    updatedAt: new Date(timestamp + index)
-  }));
-
-  await Product.bulkCreate(productsWithTimestamps);
-  await DeliveryOption.bulkCreate(deliveryOptionsWithTimestamps);
-  await CartItem.bulkCreate(cartItemsWithTimestamps);
-  await Order.bulkCreate(ordersWithTimestamps);
+  // Reset all files to default data
+  fs.writeFileSync(FILES.products, JSON.stringify(defaultProducts, null, 2));
+  fs.writeFileSync(FILES.deliveryOptions, JSON.stringify(defaultDeliveryOptions, null, 2));
+  fs.writeFileSync(FILES.cart, JSON.stringify(defaultCart, null, 2));
+  fs.writeFileSync(FILES.orders, JSON.stringify(defaultOrders, null, 2));
 
   res.status(204).send();
 });
 
 export default router;
+

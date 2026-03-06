@@ -1,48 +1,39 @@
 import express from 'express';
-import { Order } from '../models/Order.js';
-import { Product } from '../models/Product.js';
-import { DeliveryOption } from '../models/DeliveryOption.js';
-import { CartItem } from '../models/CartItem.js';
+import { DataStore } from '../utils/dataStore.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   const expand = req.query.expand;
-  let orders = await Order.unscoped().findAll({ order: [['orderTimeMs', 'DESC']] }); // Sort by most recent
+  let orders = DataStore.getOrders().sort((a, b) => b.createdAt - a.createdAt);
 
   if (expand === 'products') {
-    orders = await Promise.all(orders.map(async (order) => {
-      const products = await Promise.all(order.products.map(async (product) => {
-        const productDetails = await Product.findByPk(product.productId);
-        return {
-          ...product,
-          product: productDetails
-        };
-      }));
-      return {
-        ...order.toJSON(),
-        products
-      };
+    orders = orders.map(order => ({
+      ...order,
+      products: order.products.map(product => ({
+        ...product,
+        product: DataStore.getProductById(product.productId)
+      }))
     }));
   }
 
   res.json(orders);
 });
 
-router.post('/', async (req, res) => {
-  const cartItems = await CartItem.findAll();
+router.post('/', (req, res) => {
+  const cartItems = DataStore.getCartItems();
 
   if (cartItems.length === 0) {
     return res.status(400).json({ error: 'Cart is empty' });
   }
 
   let totalCostCents = 0;
-  const products = await Promise.all(cartItems.map(async (item) => {
-    const product = await Product.findByPk(item.productId);
+  const products = cartItems.map(item => {
+    const product = DataStore.getProductById(item.productId);
     if (!product) {
       throw new Error(`Product not found: ${item.productId}`);
     }
-    const deliveryOption = await DeliveryOption.findByPk(item.deliveryOptionId);
+    const deliveryOption = DataStore.getDeliveryOptionById(item.deliveryOptionId);
     if (!deliveryOption) {
       throw new Error(`Invalid delivery option: ${item.deliveryOptionId}`);
     }
@@ -55,41 +46,37 @@ router.post('/', async (req, res) => {
       quantity: item.quantity,
       estimatedDeliveryTimeMs
     };
-  }));
+  });
 
   totalCostCents = Math.round(totalCostCents * 1.1);
 
-  const order = await Order.create({
+  const order = DataStore.createOrder({
     orderTimeMs: Date.now(),
     totalCostCents,
     products
   });
 
-  await CartItem.destroy({ where: {} });
+  DataStore.clearCart();
 
   res.status(201).json(order);
 });
 
-router.get('/:orderId', async (req, res) => {
+router.get('/:orderId', (req, res) => {
   const { orderId } = req.params;
   const expand = req.query.expand;
 
-  let order = await Order.findByPk(orderId);
+  let order = DataStore.getOrderById(parseInt(orderId));
   if (!order) {
     return res.status(404).json({ error: 'Order not found' });
   }
 
   if (expand === 'products') {
-    const products = await Promise.all(order.products.map(async (product) => {
-      const productDetails = await Product.findByPk(product.productId);
-      return {
-        ...product,
-        product: productDetails
-      };
-    }));
     order = {
-      ...order.toJSON(),
-      products
+      ...order,
+      products: order.products.map(product => ({
+        ...product,
+        product: DataStore.getProductById(product.productId)
+      }))
     };
   }
 
@@ -97,3 +84,4 @@ router.get('/:orderId', async (req, res) => {
 });
 
 export default router;
+
