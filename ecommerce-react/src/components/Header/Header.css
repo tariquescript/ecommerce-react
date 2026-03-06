@@ -62,6 +62,9 @@
   .header .middle-section{
     display: none;
   }
+  .header.search-bar{
+    display: none;
+  }
 }
 
 .header .middle-section {
