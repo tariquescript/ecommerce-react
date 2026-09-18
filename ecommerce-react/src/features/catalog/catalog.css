@@ -1,0 +1,314 @@
+/* ==================== Hero ==================== */
+.hero {
+  position: relative;
+  overflow: clip;
+  padding-block: clamp(3rem, 7vw, 6rem) clamp(3rem, 6vw, 5rem);
+}
+
+/* A single soft accent wash behind the whole hero — cheaper and calmer than
+   stacking gradients on each element. */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: 50%;
+  width: min(1100px, 130%);
+  aspect-ratio: 1;
+  transform: translateX(-30%);
+  background: radial-gradient(circle at 60% 40%, var(--accent-soft), transparent 62%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent);
+  margin-bottom: var(--sp-6);
+}
+
+.hero__title {
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  max-width: 14ch;
+}
+
+.hero__title-accent {
+  color: var(--text-muted);
+  font-weight: 300;
+  font-style: italic;
+}
+
+.hero__lede {
+  margin-top: var(--sp-6);
+  max-width: 46ch;
+  font-size: var(--text-md);
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: var(--sp-8);
+}
+
+.hero__stats {
+  display: flex;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  margin: var(--sp-12) 0 0;
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--line);
+}
+
+.hero__stat-value {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+}
+
+.hero__stat-label {
+  margin: 2px 0 0;
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+}
+
+/* ---- Visual stage: CSS artwork with WebGL layered over it ---- */
+.hero-visual {
+  position: relative;
+  aspect-ratio: 1;
+  max-height: 540px;
+  justify-self: center;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.hero-visual__fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+/* `is-live` is set by HeroCanvas only after the scene actually builds, so a
+   failed or skipped WebGL init simply leaves the CSS artwork in place. */
+.hero-visual.is-live .hero-visual__fallback { opacity: 0; }
+
+.hero-visual__orb {
+  width: 42%;
+  aspect-ratio: 1;
+  border-radius: 42% 58% 54% 46% / 48% 44% 56% 52%;
+  background:
+    radial-gradient(circle at 34% 28%, color-mix(in srgb, var(--accent) 85%, white), var(--accent) 45%, color-mix(in srgb, var(--accent) 40%, black) 100%);
+  box-shadow: var(--shadow-accent);
+  animation: orb-drift 14s ease-in-out infinite;
+}
+
+.hero-visual__ring {
+  position: absolute;
+  width: 68%;
+  aspect-ratio: 1;
+  border: 1px solid var(--accent-line);
+  border-radius: 50%;
+  transform: rotateX(72deg);
+  animation: ring-spin 26s linear infinite;
+}
+
+.hero-visual__ring--wide {
+  width: 86%;
+  animation-duration: 38s;
+  animation-direction: reverse;
+  opacity: 0.6;
+}
+
+@keyframes orb-drift {
+  0%, 100% { transform: translateY(-2%) scale(1); }
+  50% { transform: translateY(3%) scale(1.03); }
+}
+
+@keyframes ring-spin {
+  to { transform: rotateX(72deg) rotate(360deg); }
+}
+
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out);
+}
+
+.hero-visual.is-live .hero-canvas { opacity: 1; }
+
+.hero-visual.is-unavailable .hero-canvas { display: none; }
+
+@media (max-width: 900px) {
+  .hero__grid { grid-template-columns: 1fr; }
+  .hero-visual { order: -1; max-height: 320px; max-width: 320px; }
+  .hero__title { max-width: 18ch; }
+  .hero__stats { margin-top: var(--sp-8); }
+}
+
+@media (max-width: 480px) {
+  .hero__stats { gap: var(--sp-5); }
+  .hero__stat-value { font-size: var(--text-lg); }
+}
+
+/* ==================== Assurances ==================== */
+.assurances {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: var(--sp-4);
+  padding-block: var(--sp-8);
+  border-block: 1px solid var(--line);
+}
+
+.assurance {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+}
+
+.assurance__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.assurance__title { font-size: var(--text-base); font-weight: 600; }
+
+.assurance__body {
+  margin-top: 3px;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 34ch;
+}
+
+/* ==================== Catalog ==================== */
+.catalog { padding-block: clamp(3rem, 6vw, 5rem); scroll-margin-top: calc(var(--header-h) + 1rem); }
+
+.catalog__header { margin-bottom: var(--sp-6); }
+.catalog__title { margin-top: var(--sp-2); font-size: var(--text-2xl); }
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: clamp(0.75rem, 1.6vw, 1.5rem);
+}
+
+/* ==================== Product card ==================== */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .product-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  .product-card:hover .product-card__media .product-image img {
+    transform: scale(1.055);
+  }
+}
+
+.product-card__media {
+  position: relative;
+  overflow: hidden;
+  background: var(--img-bg);
+}
+
+.product-card__media .product-image img {
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.product-card__price-tag {
+  position: absolute;
+  bottom: var(--sp-3);
+  left: var(--sp-3);
+  padding: 0.28rem 0.6rem;
+  border-radius: var(--r-full);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-line);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  color: var(--text);
+}
+
+.product-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  flex: 1;
+}
+
+.product-card__name {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.4;
+  min-height: 2.8em;
+}
+
+.product-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-top: auto;
+  padding-top: var(--sp-3);
+}
+
+.product-card__add.is-added {
+  --btn-bg: var(--success);
+  --btn-fg: #06120c;
+}
+
+.product-card--skeleton { pointer-events: none; }
+
+.product-card--skeleton .product-card__media {
+  aspect-ratio: 1;
+  border-radius: 0;
+}
+
+.product-card--skeleton .product-card__body { gap: var(--sp-3); }
+
+@media (max-width: 420px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+  .product-card__body { padding: var(--sp-3); }
+  .product-card__actions { flex-direction: column; align-items: stretch; }
+  .product-card__actions .stepper { justify-content: center; }
+}

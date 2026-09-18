@@ -1,0 +1,78 @@
+.orders { padding-block: clamp(2rem, 5vw, 4rem) var(--sp-16); }
+.orders__head { margin-bottom: var(--sp-8); }
+.orders__title { margin-top: var(--sp-2); font-size: var(--text-2xl); }
+.orders__list { display: grid; gap: var(--sp-5); }
+
+.order {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.order__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-sunken);
+}
+
+.order__meta { display: flex; gap: var(--sp-8); }
+.order__id { text-align: right; }
+
+.order__label { display: block; margin-bottom: 2px; }
+.order__value { font-size: var(--text-sm); font-weight: 550; }
+.order__value--id { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
+
+.order__products { display: grid; }
+
+.order__product {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  gap: var(--sp-5);
+  align-items: center;
+  padding: var(--sp-5);
+}
+
+.order__product + .order__product { border-top: 1px solid var(--line); }
+
+.order__image { width: 88px; border-radius: var(--r-md); }
+.order__product-name { font-size: var(--text-base); font-weight: 550; line-height: 1.4; }
+
+.order__status {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: var(--sp-2);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.order__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.order__status--delivered { color: var(--success); }
+.order__status--shipped { color: var(--accent); }
+.order__status--preparing { color: var(--text-subtle); }
+
+.order__qty { margin-top: var(--sp-1); font-size: var(--text-xs); color: var(--text-subtle); }
+
+.order__actions { display: flex; flex-direction: column; gap: var(--sp-2); }
+.order__lines { display: grid; gap: var(--sp-2); flex: 1; }
+.order__body { display: flex; gap: var(--sp-4); padding: var(--sp-5); }
+
+@media (max-width: 720px) {
+  .order__product { grid-template-columns: 72px minmax(0, 1fr); gap: var(--sp-4); }
+  .order__image { width: 72px; }
+  .order__actions { grid-column: 1 / -1; flex-direction: row; }
+  .order__actions > * { flex: 1; }
+  .order__meta { gap: var(--sp-5); }
+}

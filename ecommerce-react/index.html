@@ -1,14 +1,77 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ecommerce React</title>
-    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <title>TariqueScript — Everyday things, uncommonly made</title>
+    <meta
+      name="description"
+      content="A fast, accessible storefront: responsive imagery, optimistic cart updates and a WebGL centrepiece. Built with React 19, Vite and three.js."
+    />
+    <meta name="theme-color" content="#08090b" />
+    <meta name="color-scheme" content="dark light" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://ecommerce-ts-react.vercel.app/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="TariqueScript — Everyday things, uncommonly made" />
+    <meta
+      property="og:description"
+      content="A fast, accessible storefront built with React 19, Vite and three.js."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- The API is on a different origin and is hit immediately after parse,
+         so start the DNS + TLS handshake now rather than at first fetch. -->
+    <!-- One font file, fetched in parallel with the JS rather than after the
+         CSS that references it. -->
+    <link
+      rel="preload"
+      href="/fonts/inter-var-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <link rel="preconnect" href="https://ecommerce-api-eight-iota.vercel.app" crossorigin />
+    <link rel="dns-prefetch" href="https://ecommerce-api-eight-iota.vercel.app" />
+
+    <script>
+      // Applies the saved theme before first paint. Inline and synchronous on
+      // purpose — deferring it would flash the wrong background.
+      (function () {
+        try {
+          var saved = localStorage.getItem('ts-theme');
+          var theme =
+            saved ||
+            (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          document.documentElement.dataset.theme = theme;
+          if (theme === 'light') {
+            document.querySelector('meta[name="theme-color"]').content = '#fbfaf8';
+          }
+        } catch (e) {
+          /* storage blocked — the dark default in the markup stands */
+        }
+      })();
+    </script>
+
+    <style>
+      /* Paints the page background before the CSS bundle lands, so there is
+         never a white flash on a dark theme. */
+      html { background: #08090b; }
+      html[data-theme='light'] { background: #fbfaf8; }
+      body { margin: 0; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <p style="padding: 2rem; font-family: system-ui; color: #f2f3f5">
+        This storefront needs JavaScript enabled.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

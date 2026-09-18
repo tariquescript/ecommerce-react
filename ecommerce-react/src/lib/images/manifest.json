@@ -1,0 +1,380 @@
+{
+  "2-slot-toaster-white": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8d8d8",
+    "lqip": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADwAQCdASoQABAABABsJZACdAEejSTKnoAA/lX+CMA5BhazCnfggBThC10jVBrCLU/FkvHsvbbeHHvrGfr8tsrPsKWjwI0VjyiY47iWuAA="
+  },
+  "3-piece-cooking-set": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADwAQCdASoQABAABABsJaQAAtw7fMQNYVgA/vTfQwI8VA5UmLdOrt4pSOtERjwAn4iCU64Ebg8Bxcr3piBCN6FBwQS68j+v0BY+BPCF87mth6/6cz1ia6/b0AAAAA=="
+  },
+  "adults-plain-cotton-tshirt-2-pack-teal": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQAgCdASoQABAABABsJQBYheADBkXo9AbqAP3GmKtkQobozqRktwk7E/FooX74GdGs19TpbeEjc5bpFLTN1XC2QC80NyFoyi5nEAAA"
+  },
+  "artistic-bowl-set-6-piece": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#a8a898",
+    "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoQABAABABsJZQCdAEOvwXogAAA/c43TJKe/ZVDJ6pkNBOyZjPGf9OKJV7O8zvClc62zjUR4AA="
+  },
+  "athletic-cotton-socks-6-pairs": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAAAwAgCdASoQABAABABsJaQAD5Mu6/ZQDGNvwAD+9N1+TBAT60HnDfsQrobOfMVIroZqJY3e2KL3JnJ58mXS7Q6816BhgZQbPAAZ28smmDFJiCJ98ouzZRK7v/lGR3dYDbYAAA=="
+  },
+  "athletic-skateboard-shoes-gray": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8e8e8",
+    "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQABAABABsJaQAAudctoYgAAD+78An0WVHQniUKjB3Uqcp8C59C94G6hnncF2eIrvZ9Z7YAAA="
+  },
+  "bath-towel-set-gray-rosewood": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8d8c8",
+    "lqip": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoQABAABABsJQBdgBiwuFB5wAD+6pXWV6lVnqwdw38WOaLyHNwxCDcie/k6NJtGGMM/NsxFQQ5XRwKRnZsJSjsAAAA="
+  },
+  "bathroom-mat": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8d8b8",
+    "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAAAQAgCdASoQABAABABsJaACdAED/KTX6I5gAPxg05e+XskXqjOehzQcdU57ECnxiJ702rHlwhl7MXKhbjObw1trznUyHbGo85HpIilzcYYaJrHfULZLzIbCAAA="
+  },
+  "black-and-silver-espresso-maker": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8d8d8",
+    "lqip": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADQAQCdASoQABAABABsJaQAAfG3IVpVAAD+50Ctk/RAvsSoumUAzyDXfAguzweRcyn+PE5eMBgsPfkC2TVdN9v1vn4rDAcFjfPUqf2VMwEZGcL/Q945MAAA"
+  },
+  "blackout-curtain-set-beige": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACwAQCdASoQABAABABsJZwAAh26vbBoAP6yOq+NJuy3rEo0Dn86Rc1vPFz+kDtVxbxyl5MdzeWT4AqPlWv2Z0Y9+o6Vw6coAAA="
+  },
+  "blackout-curtains-set-teal": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#989898",
+    "lqip": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAQCdASoQABAABABsJZwAAsVzi9K9SAD+NDrSnWOhGigum0DiUABEWPEU4r01IhZgA/1BRNcHph3xoSdh0msTtsSGdF/mXThAcyuloCpAgAAA"
+  },
+  "countertop-push-blender-black": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8d8d8",
+    "lqip": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAQCdASoQABAABABsJQBOgCFNDWTRGAD8Zf10D2J7s6tVyFzkDDjKf5hOijyqDBSOT6jjwaeYRuOyJ1T2stjX0QmIyjhzlBeF0UeSkoTcxrgA"
+  },
+  "crystal-zirconia-stud-earrings-pink": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#a8b8c8",
+    "lqip": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAAAwAgCdASoQABAABABsJQBOgCPVqB2Zf32kAAD+kHKalRMB4RcFrdkxf0LQ083gnPfrp4Kh0MS/NrRXGnESceVdg6XwAA=="
+  },
+  "duvet-cover-set-gray-queen": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#887868",
+    "lqip": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAwAgCdASoQABAABABsJYwCdAEQ/d7f3vE0AAD+AUlP71ZIzfBig5yGfgtTdyYHuUqkw+lsZm4f4H1dxCzIquW0zA/otBL/JOCLZAAA"
+  },
+  "electric-steel-hot-water-kettle-white": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#081808",
+    "lqip": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAADQAQCdASoQABAABABsJZAC7ACnNRYaTgD+7eA3tKo2zUurAIwZnwUQgRMQdIc4+B+N4wSrd353fZ4v80TshUgsCAzsvV1slPZPCUygottQ7ejnq3IrmYv6k9KUoIGO45IVDAAA"
+  },
+  "elegant-white-dinner-plate-set": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8e8d8",
+    "lqip": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADQAQCdASoQABAABABsJZQAAxf/dLLAwgD+7/gf4Ba7tsusVrXENOrGEDKk89mttgHdZP9XGD/UUsc/I8ABXIYbC3wpe5kjaKcOnceO1RlPogNLMAA="
+  },
+  "facial-tissue-2-ply-8-boxes": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8d8d8",
+    "lqip": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAACwAQCdASoQABAABABsJQAAXOjU/vUAAP7qcTuMX0+Abct+ap1lAqfmhhTQJRIV0hR+2Q5u2IAAAA=="
+  },
+  "glass-screw-lid-food-containers": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8e8e8",
+    "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAAAQAgCdASoQABAABABsJYgC7AEOb4Whd5WAAP7xybEi30QVXz1PDzRMq9KaLy1ga/UPQlVnCc8Vg6JLeToxMNbJU7bGKw3t6JP92iQRkFXFKQXWqHXAN3L7QAA="
+  },
+  "intermediate-composite-basketball": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#383838",
+    "lqip": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAAAQAgCdASoQABAABABsJZACdADM0mSPMRYAAP7ZnaXM962XijEAjMuzGN68oMYSb0omvFIVo54ZIBdKs7paBvf2I2WQIpLQvG4AAA=="
+  },
+  "kitchen-paper-towels-8-pack": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8d8d8",
+    "lqip": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoQABAABABsJYwCw7DyA3SgAAD+1PmrrQSINFwD6hvz1uvDALXPxvKHnLPSBAAA"
+  },
+  "knit-athletic-sneakers-gray": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8e8e8",
+    "lqip": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADQAQCdASoQABAABABsJaQAAudbeuzLIAD+78eBTga9qTR7+QzDUUVefFVqIu/z4LaVCPR3fV2G63GuqWtBQAAA"
+  },
+  "laundry-detergent-tabs": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8e8e8",
+    "lqip": "data:image/webp;base64,UklGRjYAAABXRUJQVlA4ICoAAABwAQCdASoQABAABABsJZQCdAFAAAD+7/f1Jdi+YOW3lx6+1Cnz2HWAAAA="
+  },
+  "luxury-towel-set": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8e8e8",
+    "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAAAQAgCdASoQABAABABsJaQAAuyLGcJ4kE8AAP62HNvWBXgIudun534PoArNDwv1BVIjQrCcK5MwWs4qSAA="
+  },
+  "men-athletic-shoes-white": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8e8e8",
+    "lqip": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADQAQCdASoQABAABABsJaQAAugujk0uwAD+8dwwY+s1s9svagyBUd7SWVksl7ki4ZRkzC3JFJyAAA=="
+  },
+  "men-brown-flat-sneakers": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#c8d8d8",
+    "lqip": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAQAgCdASoQABAABABsJZQAAudfTGgjw1AAAP7nCdMFKjtUHOMu7kALBsqSnilrjPCqCMQGo18UcpMCNyeqZP7wLibh4CQKYAA="
+  },
+  "men-chino-pants-beige": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAACwAQCdASoQABAABABsJYwAAZn7+8pYAPa83Qiuu8BaIWJMNO8aGpzQyqfROzpEaepLJNIGy4vDkUK+OnrTwUOOrVPSljuqeGgXy8PY/tPkcG5O3qab1HcyAAA="
+  },
+  "men-cozy-fleece-hoodie-light-teal": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8d8d8",
+    "lqip": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAACwAQCdASoQABAABABsJZwAAhr44bAAAP7qkrTH14pdKx6uYq+StbrwZhErEBJ/xkksNoT1iW5izC656az7SbM4EAA="
+  },
+  "men-golf-polo-t-shirt-gray": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#b8b8b8",
+    "lqip": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoQABAABABsJZwAAtjpHDHxAAD+8dDTyfvuqly8hnS+RUQCBZGSP2czAfkwAAAA"
+  },
+  "men-navigator-sunglasses-black": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADwAQCdASoQABAABABsJaQAAudrKjqLJwAA/vNv/oNQqDb3/O5e9yzPTC72hY8ASfIaoRQqrBqMVozknAetHwtQUBJBqBBkl44VCYyAAAA="
+  },
+  "men-stretch-wool-sweater-black": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#887868",
+    "lqip": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAAAQAgCdASoQABAABABsJZQC7AD1qjt5LPQwAO+ZpAGKZjvfZPHShhfCJp7q8EkSyoFz3AK+Fi69Cp1I9QAAAA=="
+  },
+  "non-stick-cooking-set-4-pieces": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAAAwAgCdASoQABAABABsJZwAFEB7ik5sD6hg0AD5IqpvpyBVt3h0NtFr5RruX8ngFN/uQvceuuQ4NWL8WAb2wINt+r8vcEVcLTvq57tkZFuBcQbKPIS8LKJhd+cRYDKBVMQABfUoAAA="
+  },
+  "round-sunglasses-gold": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQABAABABsJaQAAudIgSbXAAD+9MuxkryD7eEbU5UiHpHwBXcYoGY5jb/FXJmnwJPlmXgAAAA="
+  },
+  "sky-leaf-branch-earrings": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#080808",
+    "lqip": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADwAQCdASoQABAABABsJaQAApPD5Nyaf1AA/vV/d/uNxSMjlbucL0Jm3rvJfUS8FEyAqRBBDiJ69C1e0ucAGTkPilvUVinwIL6KFNaAAAA="
+  },
+  "straw-sunhat": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8c8b8",
+    "lqip": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADwAQCdASoQABAABABsJYgCdAEOpFgtrAAA/t5zkgo27a9ypTBnrNfjeAWSseC32YcKQnAKog40KtNFoNTupigTmAAAAA=="
+  },
+  "vanity-mirror-pink": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#b8b8a8",
+    "lqip": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADwAQCdASoQABAABABsJYwCdADRpTXXrAAA/ob5SzOfSxIYIl0fANhtJTOZL9vdpO63gYD/tWwtzX/suy8Ou90R3AoV8r+h6QFNaHAA"
+  },
+  "women-knit-ballet-flat-white": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#d8d8c8",
+    "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAAAwAgCdASoQABAABABsJQBOgCIHjzVN+3C6QAD+6EhNkLA5RmyQLLfTRYeMB+rHKZyYRiWS1DAYrN24H9X1r/SY3FzP5PBgqnjCJSxlp6VcIaj85ChXIGsoAAA="
+  },
+  "women-knit-beanie-pom-pom-blue": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#e8f8f8",
+    "lqip": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwAgCdASoQABAABABsJQBOgCFrjidU7G3HAAD+8371k1hCWN4SjkUpl8qOnYuwcPI3Ij8ZlpSzzO/AolvOU+sNise7Zv69ff/MOkUeUAemelzFIalFhLAA"
+  },
+  "women-plain-cotton-oversized-sweater-gray": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAQCdASoQABAABABsJZQAAxTm2GMAc+AA/vTe/rkwLoDvjwXQigyq8vf6t4wlUUlEMQg2y2haj/jYc8NbmbfhqRzihaVbt7E2UFixVVLKoKf+mb/3ilF8VaIB3KCgAAA="
+  },
+  "women-relaxed-lounge-pants-pink": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoQABAABABsJYwCw7DdHFwmvAAA/vTc/EU7OBwrgVdu/I76lDj9kEUhEH+vd7aIxfLoIWpQAAA="
+  },
+  "women-sandal-heels-white-pink": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAAAQAgCdASoQABAABABsJYwC7AEO4Nqgcp4AAP7x1ADO56YXZZ/7vXxmAWM3M0aHQfySNTeAAAA="
+  },
+  "women-striped-beach-dress": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#c8c8c8",
+    "lqip": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAQAgCdASoQABAABABsJZACdADdHttw+pKAAP7Fekf3Hx2TZN4DFBnBNucwUEkklLG3uRvjD8Zx6IDU5WhqDt2gAAA="
+  },
+  "women-summer-jean-shorts": {
+    "widths": [
+      240,
+      400,
+      720
+    ],
+    "color": "#f8f8f8",
+    "lqip": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADwAQCdASoQABAABABsJZQCdAEN/BNrpCAA/vTeP32VoxbjO9/Kh7DHOWKLJ5zgV7BRHYS2sHT+LS+t16si1wlaAAA="
+  }
+}
