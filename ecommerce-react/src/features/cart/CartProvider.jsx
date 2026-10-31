@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { del, fetchJson, post, put } from '../../lib/api/client.js';
 import { useToast } from '../../app/providers/toast-context.js';
-import { CartContext } from './cart-context.js';
+import { CartActionsContext, CartStateContext } from './cart-context.js';
 import { cartReducer, initialCartState, summariseCart } from './cartReducer.js';
 
 const CART_PATH = '/api/cart-items?expand=product';
@@ -11,6 +11,8 @@ export function CartProvider({ children }) {
   const [isOpen, setOpen] = useState(false);
   /** product ids with an in-flight mutation, so rows can show a busy state. */
   const [pending, setPending] = useState(() => new Set());
+  /** Spoken confirmation for screen readers; sighted users get the fly-to-bag animation. */
+  const [announcement, setAnnouncement] = useState('');
   const toast = useToast();
   const itemsRef = useRef(state.items);
   itemsRef.current = state.items;
@@ -59,7 +61,7 @@ export function CartProvider({ children }) {
 
   const addItem = useCallback(
     (product, quantity = 1) => {
-      setOpen(true);
+      setAnnouncement(`${product.name} added to your bag.`);
       return commit(
         product.id,
         { type: 'add', product, quantity },
@@ -93,13 +95,15 @@ export function CartProvider({ children }) {
   );
 
   const removeItem = useCallback(
-    (productId) =>
-      commit(
+    (productId) => {
+      setAnnouncement('Removed from your bag.');
+      return commit(
         productId,
         { type: 'remove', productId },
         () => del(`/api/cart-items/${productId}`),
         'Could not remove that item.'
-      ),
+      );
+    },
     [commit]
   );
 
@@ -109,25 +113,39 @@ export function CartProvider({ children }) {
     return order;
   }, [sync]);
 
+  const openCart = useCallback(() => setOpen(true), []);
+  const closeCart = useCallback(() => setOpen(false), []);
+
   const derived = useMemo(() => summariseCart(state.items), [state.items]);
 
-  const value = useMemo(
+  const stateValue = useMemo(
+    () => ({ ...state, ...derived, pending, isOpen }),
+    [state, derived, pending, isOpen]
+  );
+
+  // Every member is a stable callback, so this object is created exactly once.
+  const actions = useMemo(
     () => ({
-      ...state,
-      ...derived,
-      pending,
-      isOpen,
-      openCart: () => setOpen(true),
-      closeCart: () => setOpen(false),
       addItem,
       updateQuantity,
       removeItem,
       setDeliveryOption,
       placeOrder,
+      openCart,
+      closeCart,
       refresh: sync,
     }),
-    [state, derived, pending, isOpen, addItem, updateQuantity, removeItem, setDeliveryOption, placeOrder, sync]
+    [addItem, updateQuantity, removeItem, setDeliveryOption, placeOrder, openCart, closeCart, sync]
   );
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartActionsContext.Provider value={actions}>
+      <CartStateContext.Provider value={stateValue}>
+        {children}
+        <p className="visually-hidden" role="status" aria-live="polite">
+          {announcement}
+        </p>
+      </CartStateContext.Provider>
+    </CartActionsContext.Provider>
+  );
 }

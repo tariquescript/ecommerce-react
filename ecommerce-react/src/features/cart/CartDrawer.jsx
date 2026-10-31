@@ -1,17 +1,18 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { useCart } from './cart-context.js';
-import { ProductImage } from '../../components/ui/ProductImage.jsx';
+import { ProductThumb } from '../../components/ui/ProductThumb.jsx';
 import { QuantityStepper } from '../../components/ui/QuantityStepper.jsx';
 import { Icon } from '../../components/ui/Icon.jsx';
+import { Button } from '../../components/ui/Button.jsx';
+import { ModelSlot } from '../../components/three/ModelSlot.jsx';
 import { formatMoney } from '../../lib/format.js';
 import { useEscapeKey, useLockBodyScroll } from '../../lib/hooks/index.js';
-import { Button } from '../../components/ui/Button.jsx';
 
 const FREE_SHIPPING_CENTS = 4000;
 
 /**
- * Side drawer for the bag. Adding something no longer bounces the user to a
+ * Side sheet for the bag. Adding something never bounces the user to a
  * different route — the whole add → review → checkout path stays in place.
  */
 export function CartDrawer() {
@@ -19,12 +20,20 @@ export function CartDrawer() {
     useCart();
   const panelRef = useRef(null);
   const closeRef = useRef(null);
+  const returnFocusRef = useRef(null);
 
   useLockBodyScroll(isOpen);
   useEscapeKey(closeCart, isOpen);
 
+  // Focus moves into the sheet on open and back to whatever opened it on close.
   useEffect(() => {
-    if (isOpen) closeRef.current?.focus();
+    if (isOpen) {
+      returnFocusRef.current = document.activeElement;
+      closeRef.current?.focus();
+    } else if (returnFocusRef.current) {
+      returnFocusRef.current.focus?.();
+      returnFocusRef.current = null;
+    }
   }, [isOpen]);
 
   // Focus trap — a drawer the keyboard can tab out of behind the scrim is broken.
@@ -54,31 +63,15 @@ export function CartDrawer() {
   const progress = Math.min(100, (subtotalCents / FREE_SHIPPING_CENTS) * 100);
 
   return (
-    <div className={`drawer ${isOpen ? 'is-open' : ''}`} aria-hidden={!isOpen}>
-      <button
-        className="drawer__scrim"
-        onClick={closeCart}
-        tabIndex={-1}
-        aria-hidden="true"
-      />
+    <div className={`drawer ${isOpen ? 'is-open' : ''}`} aria-hidden={!isOpen} inert={!isOpen}>
+      <button className="drawer__scrim" onClick={closeCart} tabIndex={-1} aria-hidden="true" />
 
-      <aside
-        className="drawer__panel"
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Your bag"
-      >
+      <aside className="drawer__panel" ref={panelRef} role="dialog" aria-modal="true" aria-label="Your bag">
         <header className="drawer__head">
           <h2 className="drawer__title">
             Your bag <span className="drawer__count tnum">{count}</span>
           </h2>
-          <button
-            ref={closeRef}
-            className="icon-btn"
-            onClick={closeCart}
-            aria-label="Close bag"
-          >
+          <button ref={closeRef} className="icon-btn drawer__close" onClick={closeCart} aria-label="Close bag">
             <Icon name="close" size={17} strokeWidth={2} />
           </button>
         </header>
@@ -91,12 +84,11 @@ export function CartDrawer() {
             <p className="drawer__shipping-text">
               {remaining === 0 ? (
                 <>
-                  <Icon name="check" size={13} strokeWidth={2.5} /> Priority shipping is on us
+                  <Icon name="check" size={14} strokeWidth={2.5} /> <strong>Priority shipping is on us.</strong>
                 </>
               ) : (
                 <>
-                  <span className="tnum">{formatMoney(remaining)}</span> away from free priority
-                  shipping
+                  <strong className="tnum">{formatMoney(remaining)}</strong> away from free priority shipping
                 </>
               )}
             </p>
@@ -106,9 +98,7 @@ export function CartDrawer() {
         <div className="drawer__body">
           {items.length === 0 ? (
             <div className="drawer__empty">
-              <span className="drawer__empty-icon">
-                <Icon name="cart" size={26} />
-              </span>
+              <ModelSlot model="bag" className="drawer__empty-model" />
               <h3>Your bag is empty</h3>
               <p>Pieces you add will show up here.</p>
               <Button variant="secondary" onClick={closeCart}>
@@ -117,22 +107,18 @@ export function CartDrawer() {
             </div>
           ) : (
             <ul className="drawer__list">
-              {items.map((item) => (
+              {items.map((item, index) => (
                 <li
                   key={item.productId}
                   className={`drawer__item ${pending.has(item.productId) ? 'is-pending' : ''}`}
+                  style={{ '--i': index }}
                 >
-                  <ProductImage
-                    src={item.product?.image}
-                    alt={item.product?.name ?? ''}
-                    sizes="72px"
-                    className="drawer__item-image"
-                  />
+                  <ProductThumb product={item.product} sizes="76px" className="drawer__item-image" />
 
                   <div className="drawer__item-info">
                     <p className="drawer__item-name clamp-2">{item.product?.name}</p>
                     <p className="drawer__item-price tnum">
-                      {formatMoney(item.product?.priceCents ?? 0)}
+                      {formatMoney(item.product?.priceCents ?? 0)} each
                     </p>
                     <div className="drawer__item-controls">
                       <QuantityStepper
@@ -166,9 +152,9 @@ export function CartDrawer() {
               <strong className="tnum">{formatMoney(subtotalCents)}</strong>
             </div>
             <p className="drawer__fineprint">Delivery and tax are calculated at checkout.</p>
-            <Button as={Link} to="/checkout" size="lg" full onClick={closeCart}>
+            <Button as={Link} to="/checkout" viewTransition size="lg" full onClick={closeCart}>
               Review your order
-              <Icon name="arrowRight" size={17} />
+              <Icon name="arrowRight" size={18} />
             </Button>
           </footer>
         )}

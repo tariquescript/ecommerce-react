@@ -21,6 +21,9 @@ const PATHS = {
   minus: 'M5 12h14',
   chevronDown: 'M6 9.5 12 15l6-5.5',
   refresh: 'M20 11a8 8 0 1 0-.7 4.3M20 5v6h-6',
+  bag: 'M5.5 8h13l-.9 11.1a1 1 0 0 1-1 .9H7.4a1 1 0 0 1-1-.9L5.5 8Zm3.5 0V6.5a3 3 0 0 1 6 0V8',
+  arrowUpRight: 'M7 17 17 7m0 0H8.5M17 7v8.5',
+  star: 'M12 3.4l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 16.7l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85L12 3.4Z',
 };
 
 export function Icon({ name, size = 20, strokeWidth = 1.7, filled = false, ...rest }) {

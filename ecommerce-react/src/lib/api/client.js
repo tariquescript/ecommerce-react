@@ -111,6 +111,11 @@ export function get(path, { signal, revalidate = true } = {}) {
   return { cached: entry?.data, promise };
 }
 
+/** Reads the cache without touching the network — safe to call during render. */
+export function peek(path) {
+  return cache.get(path)?.data;
+}
+
 /** Uncached GET that always resolves to data — for one-shot reads. */
 export const fetchJson = (path, options) => get(path, options).promise;
 
@@ -131,9 +136,25 @@ export const post = mutate('POST');
 export const put = mutate('PUT');
 export const del = mutate('DELETE');
 
-/** Warm the cache before React asks for it — called from the entry module. */
+/**
+ * Warm the cache before React asks for it — called from the entry module.
+ * A seeded (stale) entry still triggers the revalidating request.
+ */
 export function prefetch(path) {
-  if (!cache.has(path) && !inflight.has(path)) get(path);
+  const entry = cache.get(path);
+  const isFresh = entry && Date.now() - entry.at < FRESH_MS;
+  // Whoever reads the resource handles failure; the warm-up itself must not
+  // surface as an unhandled rejection when the API is unreachable.
+  if (!isFresh && !inflight.has(path)) get(path).promise.catch(() => {});
+}
+
+/**
+ * Pre-populates a GET with data shipped in the bundle (a build-time snapshot).
+ * It is stored as already stale, so the first read paints it instantly and the
+ * same read kicks off a refresh — stale-while-revalidate from the first frame.
+ */
+export function seed(path, data) {
+  if (!cache.has(path)) cache.set(path, { data, at: 0 });
 }
 
 export const __testing = { cache, inflight };

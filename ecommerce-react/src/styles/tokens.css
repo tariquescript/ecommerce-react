@@ -1,134 +1,192 @@
 /* =============================================================
    Design tokens — the single source of truth for the visual system.
-   Every colour, space, radius and motion value in the app resolves
-   from here, which is what makes the light/dark swap a one-line change.
+
+   The identity is "cobalt & porcelain": a saturated cobalt stage, warm
+   porcelain paper, and tangerine reserved for the actions that sell.
+   Every colour, space, radius and motion value in the app resolves from
+   here, which is what makes the day/night swap a token redefinition.
    ============================================================= */
 
 :root {
   /* ---- Type ---- */
-  --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+  --font-display: 'Funnel Display Variable', 'Funnel Display Fallback', system-ui, sans-serif;
+  --font-sans: 'Funnel Sans Variable', 'Funnel Sans Fallback', system-ui, sans-serif;
 
   /* Fluid type scale — clamp() removes the need for type breakpoints. */
   --text-2xs: 0.6875rem;
   --text-xs: 0.75rem;
-  --text-sm: 0.8125rem;
-  --text-base: 0.9375rem;
-  --text-md: 1.0625rem;
-  --text-lg: clamp(1.125rem, 0.4vw + 1rem, 1.375rem);
-  --text-xl: clamp(1.5rem, 1vw + 1.2rem, 2rem);
-  --text-2xl: clamp(2rem, 2.4vw + 1.4rem, 3rem);
-  --text-3xl: clamp(2.6rem, 5vw + 1.2rem, 5.25rem);
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: clamp(1.2rem, 0.5vw + 1.05rem, 1.5rem);
+  --text-xl: clamp(1.6rem, 1.2vw + 1.25rem, 2.25rem);
+  --text-2xl: clamp(2.2rem, 3vw + 1.3rem, 3.75rem);
+  --text-3xl: clamp(2.8rem, 6vw + 1rem, 6.5rem);
+  --text-hero: clamp(3.1rem, 11.2vw, 11.5rem);
 
+  --tracking-hero: -0.055em;
   --tracking-tight: -0.035em;
-  --tracking-snug: -0.018em;
-  --tracking-wide: 0.08em;
-  --tracking-caps: 0.16em;
+  --tracking-snug: -0.015em;
+  --tracking-caps: 0.14em;
 
   /* ---- Space (4px base) ---- */
   --sp-1: 0.25rem;  --sp-2: 0.5rem;   --sp-3: 0.75rem;  --sp-4: 1rem;
   --sp-5: 1.25rem;  --sp-6: 1.5rem;   --sp-8: 2rem;     --sp-10: 2.5rem;
   --sp-12: 3rem;    --sp-16: 4rem;    --sp-20: 5rem;    --sp-24: 6rem;
 
-  /* ---- Radii ---- */
-  --r-sm: 6px;  --r-md: 10px;  --r-lg: 16px;  --r-xl: 22px;  --r-full: 999px;
+  /* ---- Radii — generous and soft, like the 3D objects ---- */
+  --r-sm: 8px;  --r-md: 14px;  --r-lg: 22px;  --r-xl: 32px;  --r-full: 999px;
 
   /* ---- Layout ---- */
-  --page-max: 1320px;
-  --page-pad: clamp(1rem, 4vw, 2.5rem);
-  --header-h: 68px;
+  --page-max: 1360px;
+  --page-pad: clamp(1rem, 4vw, 2.75rem);
+  --header-h: 76px;
 
   /* ---- Motion ---- */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --dur-fast: 140ms;
-  --dur-base: 240ms;
-  --dur-slow: 480ms;
+  /* A real spring curve (overshoot, settle) for things that should feel physical. */
+  --ease-bounce: linear(0, 0.2 6%, 0.62 14%, 0.95 22%, 1.08 29%, 1.1 34%, 1.06 42%, 0.99 53%, 0.98 61%, 1 76%, 1);
+  --dur-fast: 160ms;
+  --dur-base: 280ms;
+  --dur-slow: 560ms;
 
   --z-header: 40;
   --z-drawer: 60;
+  --z-fly: 70;
   --z-toast: 80;
+
+  /* ---- Brand constants (identical in both themes) ---- */
+  --porcelain: #f3f1ec;
+  --paper: #ffffff;
+  --ink: #121433;
+  --tangerine: #ff6329;
+  --tangerine-strong: #f04f12;
+  --on-tangerine: #1c0c03;
+  --butter: #ffd84a;
+  --blush: #ff9fbc;
+
+  /* Aisle tints. Product photography is shot on white, so it is multiplied onto
+     these — every aisle gets its own colour without touching a single image. */
+  --tint-apparel: #e9e4ff;
+  --tint-footwear: #dce9ff;
+  --tint-kitchen: #ffefc4;
+  --tint-appliances: #d9f3e7;
+  --tint-bath: #ffe1ea;
+  --tint-bedroom: #ffe5d3;
+  --tint-accessories: #fbe2f6;
+  --tint-sports: #d6f2f5;
+  --tint-home: #efe8dc;
 }
 
 /* -------------------------------------------------------------
-   Dark theme — the default. Near-black canvas, layered surfaces,
-   a single warm accent doing all the emphasis work.
+   Day — porcelain paper with cobalt ink. The default.
    ------------------------------------------------------------- */
 :root,
-[data-theme='dark'] {
-  color-scheme: dark;
-
-  --bg: #08090b;
-  --bg-elevated: #0e1013;
-  --surface: #131518;
-  --surface-hover: #1a1d21;
-  --surface-sunken: #0b0c0e;
-
-  --text: #f2f3f5;
-  --text-muted: #9ba1a9;
-  --text-subtle: #6b7179;
-
-  --line: #1f2328;
-  --line-strong: #2b3037;
-
-  --accent: #e8b44c;
-  --accent-hover: #f3c469;
-  --accent-contrast: #16130b;
-  --accent-soft: rgba(232, 180, 76, 0.12);
-  --accent-line: rgba(232, 180, 76, 0.28);
-
-  --success: #48c98b;
-  --danger: #f2696a;
-
-  --glass: rgba(12, 14, 17, 0.72);
-  --glass-line: rgba(255, 255, 255, 0.07);
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 24px 60px -18px rgba(0, 0, 0, 0.85);
-  --shadow-accent: 0 12px 40px -12px rgba(232, 180, 76, 0.45);
-
-  --img-bg: #16181c;
-  --scrim: rgba(0, 0, 0, 0.62);
-}
-
-/* -------------------------------------------------------------
-   Light theme — warm paper rather than pure white, so the same
-   accent stays legible and the whole thing still reads editorial.
-   ------------------------------------------------------------- */
 [data-theme='light'] {
   color-scheme: light;
 
-  --bg: #fbfaf8;
+  --bg: #f3f1ec;
   --bg-elevated: #ffffff;
   --surface: #ffffff;
-  --surface-hover: #f5f4f1;
-  --surface-sunken: #f2f1ed;
+  --surface-hover: #f8f7f3;
+  --surface-sunken: #ebe8e1;
 
-  --text: #16181c;
-  --text-muted: #5e646d;
-  --text-subtle: #8b919a;
+  --text: #121433;
+  --text-muted: #545978;
+  --text-subtle: #868aa5;
 
-  --line: #e6e4df;
-  --line-strong: #d4d1ca;
+  --line: #e2dfd7;
+  --line-strong: #cdc9be;
 
-  --accent: #9a6b12;
-  --accent-hover: #7d560c;
-  --accent-contrast: #ffffff;
-  --accent-soft: rgba(154, 107, 18, 0.09);
-  --accent-line: rgba(154, 107, 18, 0.24);
+  --cobalt: #2438f0;
+  --cobalt-strong: #1729cf;
+  --cobalt-soft: rgba(36, 56, 240, 0.08);
+  --cobalt-line: rgba(36, 56, 240, 0.24);
 
-  --success: #17794f;
-  --danger: #c0353b;
+  /* The stage colour: hero, footer and other full-bleed brand moments. */
+  --stage: #2438f0;
+  --stage-deep: #1a2ad6;
+  --on-stage: #ffffff;
+  --on-stage-muted: rgba(255, 255, 255, 0.74);
+  --on-stage-line: rgba(255, 255, 255, 0.22);
 
-  --glass: rgba(251, 250, 248, 0.78);
-  --glass-line: rgba(0, 0, 0, 0.07);
+  --accent: var(--cobalt);
+  --success: #12875a;
+  --danger: #d4383a;
 
-  --shadow-sm: 0 1px 2px rgba(20, 20, 20, 0.06);
-  --shadow-md: 0 8px 24px -10px rgba(20, 20, 20, 0.18);
-  --shadow-lg: 0 24px 60px -20px rgba(20, 20, 20, 0.22);
-  --shadow-accent: 0 12px 40px -14px rgba(154, 107, 18, 0.3);
+  --glass: rgba(246, 244, 239, 0.8);
+  --glass-line: rgba(18, 20, 51, 0.08);
 
-  --img-bg: #f2f1ed;
-  --scrim: rgba(28, 26, 22, 0.42);
+  --shadow-sm: 0 1px 2px rgba(18, 20, 51, 0.06);
+  --shadow-md: 0 12px 30px -14px rgba(18, 20, 51, 0.22);
+  --shadow-lg: 0 30px 70px -24px rgba(18, 20, 51, 0.32);
+  --shadow-cobalt: 0 14px 34px -14px rgba(36, 56, 240, 0.55);
+  --shadow-tangerine: 0 14px 34px -14px rgba(240, 79, 18, 0.6);
+
+  --img-bg: #ebe8e1;
+  --scrim: rgba(12, 14, 40, 0.42);
+
+  /* The hero's shop window: bright porcelain by day. */
+  --window-light: #ffffff;
+  --window-bg: #f6f3ec;
+  --window-shade: #e8e2d6;
+  --window-glow: 0 30px 60px -30px rgba(3, 6, 40, 0.65);
+  --tile-filter: none;
+}
+
+/* -------------------------------------------------------------
+   Night — deep ink-blue rather than black, so cobalt still reads as
+   the brand. Aisle tiles stay light: they become lit display cases.
+   ------------------------------------------------------------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0a0c24;
+  --bg-elevated: #121538;
+  --surface: #14173d;
+  --surface-hover: #1b1f4c;
+  --surface-sunken: #080a1c;
+
+  --text: #eef0ff;
+  --text-muted: #a8acd8;
+  --text-subtle: #7075a6;
+
+  --line: #23285c;
+  --line-strong: #323873;
+
+  --cobalt: #6574ff;
+  --cobalt-strong: #7d8aff;
+  --cobalt-soft: rgba(101, 116, 255, 0.14);
+  --cobalt-line: rgba(101, 116, 255, 0.34);
+
+  --stage: #1b2ad0;
+  --stage-deep: #1421a8;
+  --on-stage: #ffffff;
+  --on-stage-muted: rgba(255, 255, 255, 0.72);
+  --on-stage-line: rgba(255, 255, 255, 0.2);
+
+  --accent: var(--cobalt);
+  --success: #3fd394;
+  --danger: #ff6b6b;
+
+  --glass: rgba(16, 19, 52, 0.78);
+  --glass-line: rgba(255, 255, 255, 0.08);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 12px 30px -12px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 30px 70px -20px rgba(0, 0, 0, 0.85);
+  --shadow-cobalt: 0 14px 34px -14px rgba(101, 116, 255, 0.6);
+  --shadow-tangerine: 0 14px 34px -14px rgba(255, 99, 41, 0.55);
+
+  --img-bg: #1b1f4c;
+  --scrim: rgba(3, 4, 16, 0.66);
+
+  /* By night the window glows warm against the dark facade. */
+  --window-light: #fffaf0;
+  --window-bg: #f5ead4;
+  --window-shade: #e2d1b2;
+  --window-glow: 0 0 0 1px rgba(255, 214, 150, 0.25), 0 0 110px -10px rgba(255, 190, 110, 0.4);
+  --tile-filter: brightness(0.93) saturate(1.05);
 }

@@ -13,6 +13,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* Anchored scrolls (e.g. /#promises) clear the floating header. */
+  scroll-padding-top: calc(var(--header-h) + 1rem);
 }
 
 body {
@@ -26,6 +28,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-synthesis-weight: none;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
   transition:
     background-color var(--dur-base) var(--ease-out),
     color var(--dur-base) var(--ease-out);
@@ -60,9 +63,10 @@ a {
 }
 
 h1, h2, h3, h4 {
+  font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: var(--tracking-tight);
-  line-height: 1.08;
+  line-height: 1.02;
   text-wrap: balance;
 }
 
@@ -88,8 +92,8 @@ p {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--tangerine);
+  color: var(--on-tangerine);
 }
 
 /* ---- Scrollbar ---- */
@@ -117,11 +121,6 @@ p {
   padding-inline: var(--page-pad);
 }
 
-.stack-center {
-  display: grid;
-  place-items: center;
-}
-
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -136,7 +135,7 @@ p {
 
 .eyebrow {
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--text-subtle);
@@ -150,18 +149,22 @@ p {
   overflow: hidden;
 }
 
-/* Hairline that fades at both ends — used as a section divider. */
-.rule {
-  height: 1px;
-  border: 0;
-  background: linear-gradient(90deg, transparent, var(--line-strong) 20%, var(--line-strong) 80%, transparent);
+/* Paper grain for the cobalt stage — a 1 KB inline SVG noise tile, painted once
+   and composited, rather than an image request. */
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ---- Entrance animation, driven by IntersectionObserver ---- */
+/* ---- Entrance animation, driven by one shared IntersectionObserver ---- */
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translate3d(0, 14px, 0);
+    transform: translate3d(0, 22px, 0) scale(0.985);
   }
   to {
     opacity: 1;
@@ -174,8 +177,27 @@ p {
 }
 
 .reveal.is-visible {
-  animation: rise var(--dur-slow) var(--ease-out) forwards;
+  animation: rise 700ms var(--ease-out) both;
   animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* ---- Route transitions (View Transitions API, progressive) ----
+   The header keeps its own name so it stays put while the page beneath
+   it cross-fades; browsers without the API simply swap instantly. */
+::view-transition-old(root) {
+  animation: vt-out 200ms var(--ease-in-out) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 460ms var(--ease-out) both;
+}
+
+@keyframes vt-out {
+  to { opacity: 0; transform: translateY(-10px) scale(0.995); }
+}
+
+@keyframes vt-in {
+  from { opacity: 0; transform: translateY(18px); }
 }
 
 /* Anyone who asks for less motion gets none of it — and no layout surprises. */
@@ -190,6 +212,11 @@ p {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
   }
 
   .reveal {

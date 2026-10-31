@@ -13,14 +13,16 @@ const SHELVES = [
   ['Footwear', ['shoes', 'footwear', 'sneakers', 'heels', 'sandals', 'flats', 'running shoes']],
   ['Apparel', ['apparel', 'tshirts', 'sweaters', 'shirts', 'hoodies', 'pants', 'shorts', 'robe', 'swimsuit']],
   ['Bath', ['bathroom', 'washroom', 'restroom', 'towels', 'bath towels', 'bathmat', 'bathing']],
-  ['Bedroom', ['bedroom', 'bed sheets', 'sheets', 'covers', 'curtains', 'shades']],
-  ['Accessories', ['accessories', 'jewelry', 'sunglasses', 'glasses', 'hats', 'straw hats', 'winter hats', 'beanies', 'mirrors']],
+  // Not "shades": the API uses it for sunglasses, and Bedroom is matched before
+  // Accessories, so it used to file Round Sunglasses under Bedroom.
+  ['Bedroom', ['bedroom', 'bed sheets', 'sheets', 'covers', 'curtains']],
+  ['Accessories', ['accessories', 'jewelry', 'sunglasses', 'glasses', 'shades', 'hats', 'straw hats', 'winter hats', 'beanies', 'mirrors']],
   ['Sports', ['sports', 'basketballs', 'swimming', 'socks']],
   ['Kitchen', ['kitchen', 'cookware', 'dining', 'plates', 'bowls set', 'cooking set', 'food containers']],
 ];
 
 /** The order shelves appear in the filter bar. */
-const DISPLAY_ORDER = [
+export const DISPLAY_ORDER = [
   'Apparel',
   'Footwear',
   'Kitchen',
@@ -47,4 +49,14 @@ export function categoryOf(product) {
 export function buildCategories(products) {
   const present = new Set(products.map(categoryOf));
   return [ALL, ...DISPLAY_ORDER.filter((name) => present.has(name))];
+}
+
+/** How many products each shelf holds — the counts on the shelf and the tabs. */
+export function countByCategory(products) {
+  const counts = {};
+  for (const product of products) {
+    const shelf = categoryOf(product);
+    counts[shelf] = (counts[shelf] ?? 0) + 1;
+  }
+  return counts;
 }

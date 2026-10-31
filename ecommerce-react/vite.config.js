@@ -21,9 +21,10 @@ export default defineConfig({
       output: {
         /**
          * three.js is the largest dependency by a wide margin and is only
-         * reachable through the lazily-imported hero. Pinning it to its own
-         * chunk keeps it out of the critical path and lets it cache
-         * independently of app code.
+         * reachable through the lazily-imported 3D stage
+         * (src/components/three/load-stage.js). Pinning it to its own chunk
+         * keeps it out of the critical path and lets it cache independently
+         * of app code.
          */
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined;

@@ -16,8 +16,20 @@ function StarRow({ size, className }) {
  * Two stacked SVGs instead of a gradient keeps it free of document-level
  * `id`s, which would otherwise collide across the 42 cards in the grid.
  */
-export function Rating({ stars, count, size = 14, showCount = true }) {
+export function Rating({ stars, count, size = 14, showCount = true, compact = false }) {
   const label = `Rated ${stars} out of 5${count != null ? ` from ${count} reviews` : ''}`;
+
+  // A single star and the score — for tight spots like the corner of a tile.
+  if (compact) {
+    return (
+      <span className="rating rating--compact" role="img" aria-label={label}>
+        <svg viewBox="0 0 20 20" width={size} height={size} aria-hidden="true">
+          <path d={STAR} fill="currentColor" />
+        </svg>
+        <span className="tnum">{stars.toFixed(1)}</span>
+      </span>
+    );
+  }
 
   return (
     <span className="rating" role="img" aria-label={label}>

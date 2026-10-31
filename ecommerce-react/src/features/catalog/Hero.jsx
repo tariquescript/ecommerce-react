@@ -1,79 +1,96 @@
-import { Suspense, lazy } from 'react';
+import { Fragment } from 'react';
 import { Icon } from '../../components/ui/Icon.jsx';
-import { useIdle, useSupportsHeavyVisuals } from '../../lib/hooks/index.js';
 import { Button } from '../../components/ui/Button.jsx';
+import { ModelSlot } from '../../components/three/ModelSlot.jsx';
+import { aisleFor } from './aisles.js';
 
-// three.js lives behind this boundary and nowhere else in the app.
-const HeroCanvas = lazy(() => import('../../components/three/HeroCanvas.jsx'));
+const SIGN = ['The', 'everyday,', 'upgraded.'];
 
-const STATS = [
-  { value: '42', label: 'Curated pieces' },
-  { value: '4.6', label: 'Average rating' },
-  { value: '2 day', label: 'Priority delivery' },
-];
-
-export function Hero({ onBrowse }) {
-  const supportsWebGL = useSupportsHeavyVisuals();
-  const isIdle = useIdle();
-  // Only after first paint, and only on hardware that can spare the frames.
-  const showCanvas = supportsWebGL && isIdle;
-
+/**
+ * The hero is a shopfront, drawn in CSS: a fascia sign that switches on, a
+ * striped awning, and a lit window with the week's display behind the glass.
+ *
+ * The display is the navigation — each 3D object in the window is a real
+ * button that filters the catalogue to its aisle.
+ */
+export function Hero({ aisles, counts, total, onPickAisle, onBrowse, onShipping }) {
   return (
-    <section className="hero">
-      <div className="hero__grid page">
-        <div className="hero__copy">
-          <p className="hero__eyebrow eyebrow">
-            <Icon name="spark" size={13} filled />
-            The 2026 collection
-          </p>
+    <section className="storefront" aria-labelledby="hero-title">
+      <div className="grain" aria-hidden="true" />
 
-          <h1 className="hero__title">
-            Everyday things,
-            <span className="hero__title-accent"> uncommonly made.</span>
+      <div className="storefront__inner page">
+        <div className="fascia">
+          <span className="fascia__plaque" aria-hidden="true">
+            Nº 26
+          </span>
+          <h1 id="hero-title" className="fascia__title">
+            {SIGN.map((word, i) => (
+              // Real spaces keep the heading's accessible name a sentence.
+              <Fragment key={word}>
+                <span className="fascia__word" style={{ '--i': i }}>
+                  {word}
+                </span>{' '}
+              </Fragment>
+            ))}
           </h1>
+          <span className="fascia__plaque" aria-hidden="true">
+            Est. 2026
+          </span>
+        </div>
 
-          <p className="hero__lede">
-            A tightly edited catalogue of home, wear and kit — chosen for how they are
-            built, not how loudly they are sold. Free returns on everything.
+        <div className="awning" aria-hidden="true" />
+
+        <div className="window">
+          <div className="window__sheen" aria-hidden="true" />
+
+          {/* Decorative: the same promise is stated in the sill copy below. */}
+          <div className="open-sign" aria-hidden="true">
+            <span className="open-sign__card">
+              <span className="open-sign__face">Open</span>
+              <span className="open-sign__face open-sign__face--back">60-day returns</span>
+            </span>
+          </div>
+
+          <p className="window__caption">
+            <span>In the window this week</span>
+            <span className="window__hint">Click an object to shop its aisle</span>
           </p>
 
-          <div className="hero__actions">
-            <Button size="lg" onClick={onBrowse}>
-              Browse the collection
-              <Icon name="arrowRight" size={17} />
+          <ul className="display">
+            {aisles.map((name, i) => (
+              <li key={name} className="display__cell" style={{ '--i': i }}>
+                <button
+                  type="button"
+                  className="display__item"
+                  data-model-host
+                  onClick={() => onPickAisle(name)}
+                  aria-label={`${name}: ${counts[name] ?? 0} pieces. Show this aisle`}
+                >
+                  <ModelSlot model={aisleFor(name).model} delay={500 + i * 90} className="display__model" />
+                  <span className="display__label">{name}</span>
+                  <span className="display__count tnum">{String(counts[name] ?? 0).padStart(2, '0')}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="sill">
+          <p className="sill__lede">
+            {total} well-made things for the kitchen, the wardrobe and everywhere in between —
+            shipped in two days, returnable for sixty.
+          </p>
+          <div className="sill__actions">
+            <Button variant="tangerine" size="lg" onClick={onBrowse}>
+              Shop the catalogue
+              <Icon name="arrowRight" size={18} />
             </Button>
-            <Button as="a" variant="ghost" size="lg" href="#assurances">
+            <Button variant="on-stage" size="lg" onClick={onShipping}>
               How we ship
             </Button>
           </div>
-
-          <dl className="hero__stats">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="hero__stat">
-                <dt className="hero__stat-value tnum">{stat.value}</dt>
-                <dd className="hero__stat-label">{stat.label}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        <div className="hero-visual">
-          {/* Always-on CSS artwork. The WebGL layer fades in over it when it
-              arrives, and stays the entire visual when it never does. */}
-          <div className="hero-visual__fallback" aria-hidden="true">
-            <span className="hero-visual__orb" />
-            <span className="hero-visual__ring" />
-            <span className="hero-visual__ring hero-visual__ring--wide" />
-          </div>
-          {showCanvas && (
-            <Suspense fallback={null}>
-              <HeroCanvas />
-            </Suspense>
-          )}
         </div>
       </div>
-
-      <div className="hero__scrim" aria-hidden="true" />
     </section>
   );
 }

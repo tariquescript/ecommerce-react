@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { get } from '../api/client.js';
+import { get, peek } from '../api/client.js';
 
 /**
  * Reads a cached GET endpoint with stale-while-revalidate semantics.
  *
- * On a warm cache the component renders real data on its very first paint —
- * no spinner, no layout shift — while a refresh runs in the background.
+ * On a warm cache (or a build-time snapshot) the component renders real data
+ * on its very first paint — no spinner, no layout shift — while a refresh runs
+ * in the background. Render only ever *peeks* at the cache; the network is
+ * touched from the effect, so re-renders never start stray requests.
  */
 export function useResource(path, { enabled = true } = {}) {
-  const initial = enabled ? get(path, { revalidate: false }).cached : undefined;
-
-  const [data, setData] = useState(initial);
+  const [data, setData] = useState(() => (enabled ? peek(path) : undefined));
   const [error, setError] = useState(null);
-  const [isLoading, setLoading] = useState(enabled && initial === undefined);
+  const [isLoading, setLoading] = useState(() => enabled && peek(path) === undefined);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export function useResource(path, { enabled = true } = {}) {
   useEffect(() => {
     if (!enabled) return undefined;
     const controller = new AbortController();
-    setLoading((prev) => prev || get(path, { revalidate: false }).cached === undefined);
+    setLoading((prev) => prev || peek(path) === undefined);
     load(controller.signal);
     return () => controller.abort();
   }, [path, enabled, load]);

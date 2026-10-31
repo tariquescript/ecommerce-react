@@ -12,12 +12,11 @@ export function Skeleton({ width = '100%', height = '1em', radius = 'var(--r-sm)
 /** Mirrors ProductCard's exact geometry, so nothing moves when data lands. */
 export function ProductCardSkeleton() {
   return (
-    <article className="product-card product-card--skeleton" aria-hidden="true">
-      <Skeleton height="auto" className="product-card__media" radius="var(--r-lg)" />
-      <div className="product-card__body">
-        <Skeleton height="0.9em" width="85%" />
-        <Skeleton height="0.9em" width="55%" />
-        <Skeleton height="1.4em" width="40%" radius="var(--r-sm)" />
+    <article className="tile tile--skeleton" aria-hidden="true">
+      <Skeleton height="auto" className="tile__media" radius="var(--r-lg)" />
+      <div className="tile__body">
+        <Skeleton height="0.95em" width="85%" />
+        <Skeleton height="0.95em" width="50%" />
       </div>
     </article>
   );

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ALL, buildCategories, categoryOf } from './categories.js';
+import { ALL, buildCategories, categoryOf, countByCategory } from './categories.js';
 
 const product = (...keywords) => ({ id: keywords.join('-'), keywords });
 
@@ -14,6 +14,12 @@ describe('categoryOf', () => {
     // Tagged "kitchen" as well, but an espresso maker is an appliance.
     expect(categoryOf(product('kitchen', 'espresso makers'))).toBe('Appliances');
     expect(categoryOf(product('apparel', 'shoes'))).toBe('Footwear');
+  });
+
+  it('files "shades" under Accessories, not Bedroom', () => {
+    // The API tags Round Sunglasses only with "accessories" and "shades".
+    expect(categoryOf(product('accessories', 'shades'))).toBe('Accessories');
+    expect(categoryOf(product('bedroom', 'curtains', 'home'))).toBe('Bedroom');
   });
 
   it('falls back to Home for keywords no shelf claims', () => {
@@ -50,5 +56,17 @@ describe('buildCategories', () => {
 
   it('returns just All for an empty catalogue', () => {
     expect(buildCategories([])).toEqual([ALL]);
+  });
+});
+
+describe('countByCategory', () => {
+  it('tallies products per shelf', () => {
+    expect(
+      countByCategory([product('apparel'), product('sweaters'), product('kitchen'), product('gadget')])
+    ).toEqual({ Apparel: 2, Kitchen: 1, Home: 1 });
+  });
+
+  it('returns an empty tally for an empty catalogue', () => {
+    expect(countByCategory([])).toEqual({});
   });
 });
