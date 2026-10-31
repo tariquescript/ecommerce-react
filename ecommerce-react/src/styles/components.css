@@ -245,11 +245,11 @@ main { padding-top: var(--header-h); outline: none; }
 .header.is-floating .header__bar {
   width: min(100% - 1.5rem, 780px);
   padding: 0.4rem 0.45rem 0.4rem 1rem;
+  /* Near-opaque rather than frosted: a backdrop blur under a fixed header has
+     to be recomputed for every frame of every scroll. */
   background: var(--glass);
   border-color: var(--glass-line);
   box-shadow: var(--shadow-md);
-  -webkit-backdrop-filter: blur(18px) saturate(170%);
-  backdrop-filter: blur(18px) saturate(170%);
 }
 
 .header__brand { display: flex; align-items: center; border-radius: var(--r-full); }
@@ -526,7 +526,12 @@ main { padding-top: var(--header-h); outline: none; }
   pointer-events: none;
 }
 
-.product-image.is-loaded::after { opacity: 0; }
+.product-image.is-loaded::after {
+  opacity: 0;
+  /* Once faded, stop painting the blurred placeholder at all. */
+  visibility: hidden;
+  transition: opacity var(--dur-slow) var(--ease-out), visibility 0s linear var(--dur-slow);
+}
 
 .product-image img {
   width: 100%;
@@ -547,7 +552,6 @@ main { padding-top: var(--header-h); outline: none; }
   border-radius: var(--r-md);
   background: var(--tint, var(--img-bg));
   isolation: isolate;
-  filter: var(--tile-filter);
 }
 
 .thumb .product-image { background: none; }
@@ -751,7 +755,7 @@ main { padding-top: var(--header-h); outline: none; }
 
 /* Replays on every open: the animation only exists while .is-open does. */
 .drawer.is-open .drawer__item {
-  animation: drawer-item-in 520ms var(--ease-out) both;
+  animation: drawer-item-in 520ms var(--ease-out) backwards;
   animation-delay: calc(var(--i, 0) * 50ms + 140ms);
 }
 
@@ -915,7 +919,10 @@ main { padding-top: var(--header-h); outline: none; }
   transform: translateY(-101%);
 }
 
-.printer.is-visible .receipt { animation: print 1.9s both; }
+.printer.is-visible .receipt {
+  transform: none;
+  animation: print 1.9s backwards;
+}
 
 /* Fed in short mechanical jerks, like a real thermal printer. */
 @keyframes print {

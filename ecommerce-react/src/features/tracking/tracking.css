@@ -43,7 +43,7 @@
   width: calc(var(--p) * 100%);
   border-radius: inherit;
   background: linear-gradient(90deg, var(--cobalt-line), var(--cobalt));
-  animation: route-fill 1.6s var(--ease-out) both 200ms;
+  animation: route-fill 1.6s var(--ease-out) backwards 200ms;
 }
 
 @keyframes route-fill {
@@ -58,7 +58,7 @@
   top: 0;
   left: calc(var(--p) * (100% - var(--size)));
   width: var(--size);
-  animation: drive 1.6s var(--ease-out) both 200ms;
+  animation: drive 1.6s var(--ease-out) backwards 200ms;
 }
 
 @keyframes drive {

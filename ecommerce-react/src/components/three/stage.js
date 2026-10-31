@@ -13,10 +13,17 @@
  *   • so the pixels scroll with the document exactly like an image does.
  *
  * Budget discipline, because this must never cost the page its speed:
+ *   • nothing draws while the page is scrolling — the canvases are in-flow, so
+ *     they scroll natively as still images and every frame of the scroll belongs
+ *     to the browser; the models resume a beat after the scroll settles
+ *   • an adaptive frame rate: the cost of a frame is measured on the device, and
+ *     anything slower than ~4 ms is drawn at 30 fps instead of 60
  *   • nothing renders unless its slot is on screen (one shared IntersectionObserver)
  *   • the loop stops completely when nothing is visible or the tab is hidden
- *   • device pixel ratio is capped at 2; the back buffer only ever grows to the
+ *   • device pixel ratio is capped at 1.5; the back buffer only ever grows to the
  *     largest slot, never per-slot
+ *   • layout is never read per frame — slot positions are cached and refreshed
+ *     only after a scroll or resize
  *   • reduced-motion visitors get one still frame per slot, no loop at all
  *   • every geometry and per-instance material is disposed on unmount
  */
@@ -41,7 +48,12 @@ import {
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { buildModel, disposeModel } from './models.js';
 
-const MAX_DPR = 2;
+/** Small objects gain nothing visible above 1.5x, and pixel cost grows with its square. */
+const MAX_DPR = 1.5;
+/** Frames costing more than this (ms) on a device drop the models to 30 fps. */
+const SLOW_FRAME_MS = 4;
+/** How long after the last scroll event the models resume. */
+const SCROLL_SETTLE_MS = 140;
 /** Every model is scaled so its bounding sphere has this radius. */
 const FIT_RADIUS = 1.3;
 
@@ -83,7 +95,9 @@ function createStage() {
   const renderer = new WebGLRenderer({
     canvas,
     alpha: true,
-    antialias: true,
+    // At 1.5x and above the extra pixels already smooth the edges; MSAA on top
+    // only costs fill rate.
+    antialias: window.devicePixelRatio < 1.5,
     powerPreference: 'high-performance',
   });
   // three limps on with a context the driver handed back unusable; `precision`
@@ -135,13 +149,19 @@ function createStage() {
   let bufferWidth = 0;
   let bufferHeight = 0;
   let frameId = 0;
+  /** Timestamp of the last frame that actually drew. */
   let lastTime = 0;
   let lost = false;
+  let scrolling = false;
+  let scrollTimer = 0;
+  let rectsStale = true;
+  /** Rolling average of one frame's drawing cost on this device, in ms. */
+  let frameCost = 0;
 
   /* ---------------- loop ---------------- */
 
   function wake() {
-    if (frameId || lost || document.hidden) return;
+    if (frameId || lost || scrolling || document.hidden) return;
     lastTime = performance.now();
     frameId = requestAnimationFrame(tick);
   }
@@ -153,12 +173,26 @@ function createStage() {
 
   function tick(now) {
     frameId = 0;
+    if (scrolling) return; // the scroll-settle timer wakes the loop again
+
+    // Adaptive budget: on a device where the models cost more than a few ms,
+    // draw every other frame so the page keeps the rest of each one.
+    if (now - lastTime < (frameCost > SLOW_FRAME_MS ? 1000 / 30 - 2 : 0)) {
+      frameId = requestAnimationFrame(tick);
+      return;
+    }
+
     const dt = clamp((now - lastTime) / 1000, 0, 0.05);
     lastTime = now;
+    const started = performance.now();
+    if (rectsStale) refreshRects();
 
     let running = false;
+    let warmup = false;
     for (const slot of slots) {
       if (!slot.visible || !slot.cssWidth) continue;
+      // A model's first draw compiles its shaders — a one-off, not the steady cost.
+      if (!slot.live) warmup = true;
       if (animate) {
         step(slot, dt);
         draw(slot);
@@ -171,7 +205,19 @@ function createStage() {
       slot.dirty = false;
     }
 
+    if (running && !warmup) {
+      const cost = performance.now() - started;
+      frameCost = frameCost ? frameCost * 0.9 + cost * 0.1 : cost;
+    }
     if (running) frameId = requestAnimationFrame(tick);
+  }
+
+  /** Reads slot positions once, after a scroll or resize — never per frame. */
+  function refreshRects() {
+    for (const slot of slots) {
+      if (slot.visible) slot.rect = slot.host.getBoundingClientRect();
+    }
+    rectsStale = false;
   }
 
   /** Advances one slot's springs: hover, pointer tilt and the intro pop. */
@@ -187,9 +233,9 @@ function createStage() {
     if (slot.hovered) {
       tx = slot.local.x;
       ty = slot.local.y;
-    } else if (pointer.active) {
+    } else if (pointer.active && slot.rect) {
       // Unhovered objects still glance toward the cursor, so the page feels alive.
-      const r = slot.host.getBoundingClientRect();
+      const r = slot.rect;
       tx = clamp((pointer.x - (r.left + r.width / 2)) / window.innerWidth, -1, 1) * 0.6;
       ty = clamp(-(pointer.y - (r.top + r.height / 2)) / window.innerHeight, -1, 1) * 0.5;
     }
@@ -269,9 +315,10 @@ function createStage() {
         slot.visible = entry.isIntersecting;
         if (slot.visible) slot.dirty = true;
       }
+      rectsStale = true;
       wake();
     },
-    { rootMargin: '120px 0px' }
+    { rootMargin: '60px 0px' }
   );
 
   const sizes = new ResizeObserver((entries) => {
@@ -282,8 +329,28 @@ function createStage() {
       slot.cssHeight = entry.contentRect.height;
       slot.dirty = true;
     }
+    rectsStale = true;
     wake();
   });
+
+  // Any scroll — the page or a scroller inside it, hence capture — pauses
+  // drawing until it settles. Passive, and it does no work beyond a timer.
+  document.addEventListener(
+    'scroll',
+    () => {
+      if (!scrolling) {
+        scrolling = true;
+        sleep();
+      }
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        scrolling = false;
+        rectsStale = true;
+        wake();
+      }, SCROLL_SETTLE_MS);
+    },
+    { passive: true, capture: true }
+  );
 
   window.addEventListener(
     'pointermove',
@@ -385,6 +452,7 @@ function createStage() {
       cssWidth: 0,
       cssHeight: 0,
       hovered: false,
+      rect: null,
       local: { x: 0, y: 0 },
       state: { hover: 0, px: 0, py: 0, intro: 0 },
       time: Math.random() * 6,

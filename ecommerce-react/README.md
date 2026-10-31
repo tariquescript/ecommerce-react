@@ -88,10 +88,23 @@ low-core hardware.
   Browsers cap live WebGL contexts at around sixteen, and the usual workaround —
   one fixed canvas scissored to follow DOM elements — lags a frame behind native
   scrolling. Blitting into in-flow canvases scrolls exactly like an image.
-- **Budgeted** — one shared IntersectionObserver decides what renders; the loop
-  stops when nothing is visible or the tab is hidden; DPR is capped at 2; the
-  back buffer only ever grows to the largest slot; reduced-motion visitors get
-  one still frame per slot and no loop at all.
+- **Scroll is sacred** — the 3D loop pauses for the whole of any scroll (page or
+  inner scroller) and resumes 140 ms after it settles. The canvases are in-flow,
+  so mid-scroll they travel natively as still images and every scroll frame
+  belongs to the browser.
+- **Budgeted** — the stage measures its own frame cost on the device and drops
+  to 30 fps anywhere a frame of models costs more than ~4 ms; each model's
+  static parts are merged into one mesh per material (72 → 38 draw calls for the
+  hero shelf); one shared IntersectionObserver decides what renders; the loop
+  stops when nothing is visible or the tab is hidden; DPR is capped at 1.5;
+  layout is never read per frame; reduced-motion visitors get one still frame
+  per slot and no loop at all.
+- **Nothing expensive rides along with a scroll** — no backdrop blurs or blur
+  filters on repeated elements (the 42 tile chips and price tags use solid
+  fills and a flat offset shadow), no blend modes over live canvases, entrance
+  animations fill *backwards* so finished tiles drop their GPU layers, the
+  glass sheen moves by transform instead of repainting, and off-screen tiles
+  skip layout and paint via `content-visibility: auto`.
 - **Procedural everything** — models are lathes, extrusions, rounded boxes and
   capsules; reflections come from a procedural studio room baked once into an
   environment map; contact shadows are a 64px gradient. Shared finishes mean a

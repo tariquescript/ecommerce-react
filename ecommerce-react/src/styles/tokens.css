@@ -116,7 +116,7 @@
   --success: #12875a;
   --danger: #d4383a;
 
-  --glass: rgba(246, 244, 239, 0.8);
+  --glass: rgba(246, 244, 239, 0.95);
   --glass-line: rgba(18, 20, 51, 0.08);
 
   --shadow-sm: 0 1px 2px rgba(18, 20, 51, 0.06);
@@ -133,7 +133,6 @@
   --window-bg: #f6f3ec;
   --window-shade: #e8e2d6;
   --window-glow: 0 30px 60px -30px rgba(3, 6, 40, 0.65);
-  --tile-filter: none;
 }
 
 /* -------------------------------------------------------------
@@ -171,7 +170,7 @@
   --success: #3fd394;
   --danger: #ff6b6b;
 
-  --glass: rgba(16, 19, 52, 0.78);
+  --glass: rgba(16, 19, 52, 0.95);
   --glass-line: rgba(255, 255, 255, 0.08);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -188,5 +187,4 @@
   --window-bg: #f5ead4;
   --window-shade: #e2d1b2;
   --window-glow: 0 0 0 1px rgba(255, 214, 150, 0.25), 0 0 110px -10px rgba(255, 190, 110, 0.4);
-  --tile-filter: brightness(0.93) saturate(1.05);
 }

@@ -26,6 +26,7 @@ import {
   ExtrudeGeometry,
   Group,
   LatheGeometry,
+  Matrix4,
   Mesh,
   MeshPhysicalMaterial,
   Quaternion,
@@ -36,6 +37,7 @@ import {
   Vector3,
 } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 /* ------------------------------------------------------------------ */
 /* Materials — one shared instance per finish, so the GPU compiles a   */
@@ -119,6 +121,68 @@ function puffy(shape, depth, bevel, material) {
   return new Mesh(geometry, material);
 }
 
+/** Marks a node that animates on its own, so baking leaves its transform alone. */
+function moving(node) {
+  node.userData.dynamic = true;
+  return node;
+}
+
+const toRoot = new Matrix4();
+const local = new Matrix4();
+
+/**
+ * Collapses a model into one mesh per material.
+ *
+ * Builders compose objects from many small primitives because that is how they
+ * read best; drawing them that way would cost a draw call each. Every static
+ * mesh is moved into the root's space and merged with its material-mates, so a
+ * rubber duck is four draw calls instead of twelve. Nodes marked with
+ * `moving()` keep their own transform and are baked separately inside.
+ */
+function bake(root) {
+  root.updateMatrixWorld(true);
+  toRoot.copy(root.matrixWorld).invert();
+
+  const buckets = new Map();
+  const merged = [];
+  const nested = [];
+
+  const visit = (node) => {
+    for (const child of node.children) {
+      if (child.userData.dynamic) {
+        nested.push(child);
+        continue;
+      }
+      if (child.isMesh) {
+        const geometry = child.geometry.index ? child.geometry.toNonIndexed() : child.geometry.clone();
+        // The finishes use no textures: position and normal are all a merge needs.
+        for (const name of Object.keys(geometry.attributes)) {
+          if (name !== 'position' && name !== 'normal') geometry.deleteAttribute(name);
+        }
+        geometry.clearGroups();
+        geometry.applyMatrix4(local.multiplyMatrices(toRoot, child.matrixWorld));
+        if (!buckets.has(child.material)) buckets.set(child.material, []);
+        buckets.get(child.material).push(geometry);
+        merged.push(child);
+      }
+      visit(child);
+    }
+  };
+  visit(root);
+
+  for (const mesh of merged) {
+    mesh.geometry.dispose();
+    mesh.removeFromParent();
+  }
+  for (const [material, geometries] of buckets) {
+    const geometry = geometries.length === 1 ? geometries[0] : mergeGeometries(geometries);
+    if (geometries.length > 1) geometries.forEach((g) => g.dispose());
+    root.add(new Mesh(geometry, material));
+  }
+
+  nested.forEach(bake);
+}
+
 /** Spring-ish 0→1 ease with a little overshoot, for pops and hops. */
 const springOut = (x) => 1 - Math.cos(x * Math.PI * 2.4) * Math.exp(-x * 5.5);
 
@@ -128,7 +192,7 @@ const springOut = (x) => 1 - Math.cos(x * Math.PI * 2.4) * Math.exp(-x * 5.5);
 
 /** Apparel — a striped knit on a hanger, swinging gently from its hook. */
 function sweater() {
-  const swing = new Group();
+  const swing = moving(new Group());
   const body = new Group();
 
   const hangerWood = mat('porcelain');
@@ -249,7 +313,7 @@ function mug() {
   const puffs = [0, 1, 2].map((i) => {
     const material = new MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.9, transparent: true, opacity: 0, depthWrite: false });
     owned.push(material);
-    const puff = new Mesh(new SphereGeometry(0.11, 16, 12), material);
+    const puff = moving(new Mesh(new SphereGeometry(0.11, 16, 12), material));
     object.add(puff);
     return { puff, material, offset: i / 3 };
   });
@@ -281,7 +345,7 @@ function toaster() {
   }
 
   const toasts = [-0.2, 0.2].map((z, i) => {
-    const slice = new Group();
+    const slice = moving(new Group());
     slice.add(new Mesh(new RoundedBoxGeometry(0.92, 0.78, 0.09, 3, 0.06), mat('toast')));
     object.add(at(slice, 0, 0.72, z));
     return { slice, lag: i * 0.06 };
@@ -316,7 +380,7 @@ function toaster() {
 
 /** Bath — a rubber duck, rocking as if on the water. */
 function duck() {
-  const object = new Group();
+  const object = moving(new Group());
   const rubber = mat('butter');
 
   const body = new Mesh(new SphereGeometry(0.8, 40, 28), rubber);
@@ -465,7 +529,7 @@ function parcel() {
 
 /** Free returns — a looping arrow that keeps coming back around. */
 function returns() {
-  const loop = new Group();
+  const loop = moving(new Group());
   const glaze = mat('tangerine');
 
   loop.add(new Mesh(new TorusGeometry(0.62, 0.15, 18, 72, Math.PI * 1.5), glaze));
@@ -543,7 +607,7 @@ function padlock() {
 
   object.add(at(new Mesh(new RoundedBoxGeometry(1.1, 0.9, 0.42, 5, 0.14), mat('cobalt')), 0, 0.45, 0));
 
-  const shackle = new Group();
+  const shackle = moving(new Group());
   shackle.add(at(new Mesh(new TorusGeometry(0.33, 0.085, 14, 36, Math.PI), mat('chrome')), 0, 0.75, 0));
   shackle.add(rod([-0.33, 0.75, 0], [-0.33, 0.42, 0], 0.085, mat('chrome')));
   shackle.add(rod([0.33, 0.75, 0], [0.33, 0.42, 0], 0.085, mat('chrome')));
@@ -584,7 +648,9 @@ const BUILDERS = {
 export const MODEL_KINDS = Object.keys(BUILDERS);
 
 export function buildModel(kind) {
-  return (BUILDERS[kind] ?? bag)();
+  const model = (BUILDERS[kind] ?? bag)();
+  bake(model.object);
+  return model;
 }
 
 /** Frees the GPU buffers a model instance owns; shared finishes stay cached. */

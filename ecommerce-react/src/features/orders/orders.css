@@ -6,7 +6,7 @@
   overflow: hidden;
   border-radius: var(--r-lg);
   background: var(--surface);
-  animation: slip-in 640ms var(--ease-out) both;
+  animation: slip-in 640ms var(--ease-out) backwards;
   animation-delay: calc(var(--i, 0) * 80ms);
 }
 
@@ -62,7 +62,7 @@
   mix-blend-mode: multiply;
   translate: -50% -50%;
   rotate: -8deg;
-  animation: stamp-down 520ms var(--ease-bounce) both;
+  animation: stamp-down 520ms var(--ease-bounce) backwards;
   animation-delay: calc(var(--i, 0) * 80ms + 380ms);
   pointer-events: none;
 }
@@ -103,6 +103,7 @@
 }
 
 .slip__dot {
+  position: relative;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -111,12 +112,21 @@
 
 .slip__status--delivered { color: var(--success); }
 .slip__status--shipped { color: var(--cobalt); }
-.slip__status--shipped .slip__dot { animation: pulse 1.8s var(--ease-out) infinite; }
+/* The pulse is a ring that scales and fades — transform and opacity only, so it
+   runs on the compositor instead of repainting a box-shadow every frame. */
+.slip__status--shipped .slip__dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 1.8s var(--ease-out) infinite;
+}
 .slip__status--preparing { color: var(--tangerine-strong); }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 50%, transparent); }
-  100% { box-shadow: 0 0 0 8px transparent; }
+  from { transform: scale(1); opacity: 0.5; }
+  to { transform: scale(3); opacity: 0; }
 }
 
 .slip__qty { font-size: var(--text-xs); color: var(--text-subtle); }
